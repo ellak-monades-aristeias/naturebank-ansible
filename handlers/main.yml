@@ -1,0 +1,17 @@
+---
+- name: Recompile naturebank
+  command: >
+    /usr/bin/python -OO -m compileall /usr/local/naturebank /etc/naturebank
+  notify: Restart naturebank supervisor
+
+- name: Collect naturebank static files
+  shell: >
+    mkdir -p /usr/local/naturebank-staticfiles &&
+    cd /usr/local/naturebank &&
+    PYTHONPATH=/etc/naturebank:/usr/local/naturebank
+    DJANGO_SETTINGS_MODULE=settings
+    /usr/local/naturebank-virtualenv/bin/python
+    manage.py collectstatic --noinput
+
+- name: Restart naturebank supervisor
+  supervisorctl: name=naturebank state=restarted

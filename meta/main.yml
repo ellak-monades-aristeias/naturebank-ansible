@@ -1,0 +1,73 @@
+---
+galaxy_info:
+  author: Antonis Christofides
+  description: Ansible role for installing naturebank
+  license: GPLv3
+  platforms:
+  - name: Debian
+    versions:
+    - jessie
+
+dependencies:
+
+- role: gunicorn-instance
+  instance_name: naturebank
+  program_dir: /usr/local/naturebank
+  program_name: naturebank
+  wsgi_location: naturebank_project
+  config_dir: /etc/naturebank
+  user: naturebank
+  log_dir: /var/log/naturebank
+  virtualenv: /usr/local/naturebank-virtualenv
+  port: "{{ naturebank_port }}"
+
+- role: apache-vhost
+  server_name: "{{ naturebank_server_name }}"
+  server_aliases: "{{ naturebank_server_aliases }}"
+  cert: "{{ naturebank_ssl_cert }}"
+  private_key: "{{ naturebank_ssl_key }}"
+  chain_certificates: "{{ naturebank_chain_certificates }}"
+  extras: |
+      ProxyTimeout 30
+
+      <Location />
+          ProxyPass http://localhost:{{ naturebank_port }}/
+          ProxyPreserveHost On
+      </Location>
+
+      Alias /static/ /usr/local/naturebank-staticfiles/
+      <Location /static/>
+          ProxyPass !
+      </Location>
+      <Directory /usr/local/naturebank-staticfiles/>
+        Options -Indexes
+        Require all granted
+      </Directory>
+
+      Alias /media/ /var/local/naturebank/
+      <Location /media/>
+          ProxyPass !
+      </Location>
+      <Directory /var/local/naturebank/>
+        Options -Indexes
+        Require all granted
+      </Directory>
+  ssl_extras: |
+      <Location /Shibboleth.sso>
+          ProxyPass !
+      </Location>
+      <Location /shibboleth>
+          ProxyPass !
+      </Location>
+      <Location /admin>
+          AuthType shibboleth
+          ShibRequestSetting requireSession On
+          Require valid-user
+          ShibUseHeaders On
+          ProxyPass http://localhost:8002/admin
+          ProxyPreserveHost On
+      </Location>
+  nonssl_extras: |
+    <Location /admin>
+      Redirect permanent /admin https://{{ naturebank_server_name }}/admin
+    </Location>

@@ -1,0 +1,78 @@
+---
+- name: Install git, required for installing naturebank
+  apt: name=git
+- name: Install mercurial, required for some naturebank dependencies
+  apt: name=mercurial
+- name: Install virtualenv
+  apt: name=python-virtualenv
+
+- name: Install naturebank
+  git:
+    repo: https://github.com/ellak-monades-aristeias/naturebank.git
+    dest: /usr/local/naturebank
+    ssh_opts: '-o StrictHostKeyChecking=no'
+    version: master
+  notify:
+  - Recompile naturebank
+  - Collect naturebank static files
+
+- name: Install prerequisites
+  pip: >
+    requirements=/usr/local/naturebank/requirements.txt
+    virtualenv=/usr/local/naturebank-virtualenv
+    virtualenv_site_packages=yes
+
+- name: Create PostgreSQL user
+  postgresql_user:
+    login_host: "localhost"
+    login_user: postgres
+    login_password: "{{ postgres_password }}"
+    name: "naturebank"
+    password: "{{ naturebank_secret_key }}"
+
+- name: Create database
+  postgresql_db:
+    name: "naturebank"
+    template: template_postgis
+    owner: "naturebank"
+  sudo: yes
+  sudo_user: postgres
+
+- name: Install custom_middleware
+  copy: src=custom_middleware.py dest=/etc/naturebank/custom_middleware.py
+  notify:
+  - Recompile naturebank
+
+- name: Configure naturebank
+  template: src=settings.py dest=/etc/naturebank/settings.py
+  notify:
+  - Recompile naturebank
+  - Collect naturebank static files
+
+- name: Check whether db is synced
+  shell: >
+    echo "select * from django_site;" |
+    sudo -u postgres psql naturebank 2>&1 |
+    grep ERROR
+  args:
+    chdir: /etc/naturebank
+  register: check_db_not_synced
+  always_run: True
+  ignore_errors: True
+  changed_when: False
+
+- name: Sync naturebank database
+  # The password hashed below is "topsecret"
+  shell: >
+    export PYTHONPATH=/etc/naturebank &&
+    export DJANGO_SETTINGS_MODULE=settings &&
+    /usr/local/naturebank-virtualenv/bin/python manage.py migrate &&
+    /usr/local/naturebank-virtualenv/bin/python manage.py createsuperuser
+    --username=admin --email=nobody@example.com --noinput
+    && (
+    echo "update auth_user set password='pbkdf2_sha256\$10000\$EkSCGqGowJhN\$0WuikmR5lAVwZbHcR8ODit6Nktth5Rj0MjXIvqPA7jQ=' where username='admin';"
+    |
+    sudo -u postgres psql naturebank )
+  args:
+    chdir: /usr/local/naturebank
+  when: check_db_not_synced.rc == 0
