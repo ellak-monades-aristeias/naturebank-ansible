@@ -7,9 +7,10 @@ Overview
 
 This is an Ansible role that installs naturebank_ on a server.  It
 creates a PostgreSQL user "naturebank" and a database "naturebank" owned
-by "naturebank". It also sets up an apache virtual host and a gunicorn
-service. It uses roles apache-vhost_ and gunicorn-instance_, which must
-be installed.
+by "naturebank". It sets up an apache virtual host and a gunicorn
+service. It installs mapserver and configures it to serve a WFS service.
+It uses roles apache-vhost_ and gunicorn-instance_, which must be
+installed.
 
 .. _naturebank: https://github.com/ellak-monades-aristeias/naturebank
 .. _apache-vhost: https://github.com/aptiko-ansible/apache-vhost

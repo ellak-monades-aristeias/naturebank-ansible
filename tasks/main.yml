@@ -76,3 +76,24 @@
   args:
     chdir: /usr/local/naturebank
   when: check_db_not_synced.rc == 0
+
+- name: Naturebank mapserver map file
+  template:
+    src: naturebank.map
+    dest: /etc/naturebank/naturebank.map
+    owner: root
+    group: mapserver
+    mode: 0640
+
+- name: Set apache to serve mapserver
+  copy:
+    src: apache-mapserver.conf
+    dest: /etc/apache2/snippets/{{ naturebank_server_name }}/mapserver.conf
+  notify:
+  - Restart apache
+
+- name: Create media files directory
+  file:
+    dest: /var/local/naturebank
+    state: directory
+    owner: naturebank
