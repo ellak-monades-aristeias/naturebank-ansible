@@ -37,11 +37,10 @@ MAP
         END
     END
 
-
     LAYER
-      NAME "biotopes"
+      NAME "places_beautiful"
       METADATA
-        "wfs_title"          "Biotopes"
+        "wfs_title"          "Places with special natural beauty"
         "wfs_srs"            "EPSG:4326"
         "gml_include_items"  "all"
         "gml_featureid"      "site_code"
@@ -52,6 +51,74 @@ MAP
       CONNECTIONTYPE POSTGIS
       CONNECTION "host=localhost port=5432 dbname=naturebank user=naturebank password={{ naturebank_secret_key }}"
       DATA "gis_mpoly from naturebank_biotope"
+      FILTER "category_id = 1"
     END
 
+    LAYER
+      NAME "biotopes_natura"
+      METADATA
+        "wfs_title"          "Natura biotopes"
+        "wfs_srs"            "EPSG:4326"
+        "gml_include_items"  "all"
+        "gml_featureid"      "site_code"
+        "wfs_enable_request" "*"
+      END
+      STATUS ON
+      TYPE POLYGON
+      CONNECTIONTYPE POSTGIS
+      CONNECTION "host=localhost port=5432 dbname=naturebank user=naturebank password={{ naturebank_secret_key }}"
+      DATA "gis_mpoly from naturebank_biotope"
+      FILTER "category_id = 2"
+    END
+
+    LAYER
+      NAME "biotopes_misc"
+      METADATA
+        "wfs_title"          "Other biotopes"
+        "wfs_srs"            "EPSG:4326"
+        "gml_include_items"  "all"
+        "gml_featureid"      "site_code"
+        "wfs_enable_request" "*"
+      END
+      STATUS ON
+      TYPE POLYGON
+      CONNECTIONTYPE POSTGIS
+      CONNECTION "host=localhost port=5432 dbname=naturebank user=naturebank password={{ naturebank_secret_key }}"
+      DATA "gis_mpoly from naturebank_biotope"
+      FILTER "category_id = 3"
+    END
+
+    LAYER
+      NAME "biotopes_corine"
+      METADATA
+        "wfs_title"          "Corine biotopes"
+        "wfs_srs"            "EPSG:4326"
+        "gml_include_items"  "all"
+        "gml_featureid"      "site_code"
+        "wfs_enable_request" "*"
+      END
+      STATUS ON
+      TYPE POLYGON
+      CONNECTIONTYPE POSTGIS
+      CONNECTION "host=localhost port=5432 dbname=naturebank user=naturebank password={{ naturebank_secret_key }}"
+      DATA "gis_mpoly from naturebank_biotope"
+      FILTER "category_id = 4"
+    END
+
+    LAYER
+      NAME "places_misc"
+      METADATA
+        "wfs_title"          "Miscellaneous places"
+        "wfs_srs"            "EPSG:4326"
+        "gml_include_items"  "all"
+        "gml_featureid"      "site_code"
+        "wfs_enable_request" "*"
+      END
+      STATUS ON
+      TYPE POLYGON
+      CONNECTIONTYPE POSTGIS
+      CONNECTION "host=localhost port=5432 dbname=naturebank user=naturebank password={{ naturebank_secret_key }}"
+      DATA "gis_mpoly from naturebank_biotope"
+      FILTER "category_id = 6"
+    END
 END
