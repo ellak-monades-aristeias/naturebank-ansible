@@ -95,6 +95,16 @@
     group: mapserver
     mode: 0640
 
+- name: Mapserver help directory
+  file:
+    state: directory
+    dest: /var/www/{{ naturebank_server_name }}/mapserverhelp
+
+- name: Mapserver help
+  template:
+    src: mapserver-help.html
+    dest: /var/www/{{ naturebank_server_name }}/mapserverhelp/index.html
+
 - name: Set apache to serve mapserver
   copy:
     src: apache-mapserver.conf
