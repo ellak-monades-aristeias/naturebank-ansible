@@ -95,6 +95,11 @@
     group: mapserver
     mode: 0640
 
+- name: Naturebank mapserver GetFeatureInfo template
+  copy:
+    src: mapserver-getfeatureinfo.html
+    dest: /etc/naturebank/mapserver-getfeatureinfo.html
+
 - name: Mapserver help directory
   file:
     state: directory
