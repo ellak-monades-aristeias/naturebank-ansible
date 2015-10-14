@@ -81,3 +81,8 @@ MIDDLEWARE_CLASSES = (
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_SCHEME', 'https')
 SESSION_COOKIE_SECURE = True
+
+{% if naturebank_customization_name %}
+TEMPLATE_DIRS = ['/usr/local/{{ naturebank_customization_name}}/templates']
+STATICFILES_DIRS = ['/usr/local/{{ naturebank_customization_name}}/static']
+{% endif %}

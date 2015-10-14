@@ -4,3 +4,5 @@ naturebank_ssl_cert: null
 naturebank_ssl_key: null
 naturebank_chain_certificates: null
 naturebank_awstats_allow_from: []
+naturebank_customization_name: false
+naturebank_customization_repo: false

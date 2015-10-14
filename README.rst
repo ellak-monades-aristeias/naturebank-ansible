@@ -25,6 +25,8 @@ Example::
      naturebank_server_mail: root@filotis.itia.ntua.gr
      naturebank_port: 8002
      naturebank_server_name: filotis.itia.ntua.gr
+     naturebank_customization_name: naturebank-filotis
+     naturebank_customization_repo: https://github.com/ellak-monades-aristeias/naturebank-filotis.git
      naturebank_server_aliases:
      - filotis.itia.civil.ntua.gr
      - www.filotis.itia.ntua.gr
@@ -59,6 +61,14 @@ Variables
 - ``naturebank_ssl_cert``, ``naturebank_ssl_key``,
   ``naturebank_chain_certificates``: The keys for https, in ASCII
   format. If ommitted, it will be http only.
+
+- ``naturebank_customization_name``, ``naturebank_customization_repo``:
+  The name and url of a repository containing a ``templates`` directory
+  and a ``static`` directory, containing the skin of your customization
+  of naturebank. See
+  https://github.com/ellak-monades-aristeias/naturebank-filotis.git for
+  an example. If unspecified, an uncustomized version of naturebank will
+  be installed.
 
 - ``postgres_password``: The password of the PostgreSQL ``postgres``
   user. Store this in the vault.

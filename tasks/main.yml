@@ -16,6 +16,16 @@
   - Recompile naturebank
   - Collect naturebank static files
 
+- name: Install naturebank customization
+  git:
+    repo: "{{ naturebank_customization_repo }}"
+    dest: /usr/local/{{ naturebank_customization_name }}
+    ssh_opts: '-o StrictHostKeyChecking=no'
+    version: master
+  notify:
+  - Collect naturebank static files
+  when: naturebank_customization_name
+
 - name: Install prerequisites
   pip: >
     requirements=/usr/local/naturebank/requirements.txt
