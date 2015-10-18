@@ -7,9 +7,3 @@ http://{{ naturebank_server_name }}/mapserver is the base URL for naturebank's
 map services. For example, <a href="http://{{ naturebank_server_name
 }}/mapserver?SERVICE=WMS&amp;REQUEST=GetCapabilities">http://{{ naturebank_server_name }}/mapserver?SERVICE=WMS&amp;REQUEST=GetCapabilities</a>
 will return the capabilities for WMS; likewise for WFS.</p>
-
-<p>You can use these services by specifying http://{{ naturebank_server_name }}/mapserver
-    as the base URL in your client program. For example, in QGIS,
-    go to Layer, Add Layer, Add WFS Layer, create a new connection with URL
-    http://{{ naturebank_server_name }}/mapserver, and then connect to it; it
-    should present a list of layers which you can add.</p>
