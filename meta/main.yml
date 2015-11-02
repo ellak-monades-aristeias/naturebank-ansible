@@ -30,24 +30,18 @@ dependencies:
   extras: |
       ProxyTimeout 30
 
-      <Location />
-          ProxyPass http://localhost:{{ naturebank_port }}/
+      <LocationMatch "^/(?!(?:awstats|static|media|cgi-bin|mapserver))(.*)$">
+          ProxyPassMatch "http://localhost:{{ naturebank_port }}/$1"
           ProxyPreserveHost On
-      </Location>
+      </LocationMatch>
 
       Alias /static/ /usr/local/naturebank-staticfiles/
-      <Location /static/>
-          ProxyPass !
-      </Location>
       <Directory /usr/local/naturebank-staticfiles/>
         Options -Indexes
         Require all granted
       </Directory>
 
       Alias /media/ /var/local/naturebank/
-      <Location /media/>
-          ProxyPass !
-      </Location>
       <Directory /var/local/naturebank/>
         Options -Indexes
         Require all granted
