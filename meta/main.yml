@@ -1,13 +1,4 @@
 ---
-galaxy_info:
-  author: Antonis Christofides
-  description: Ansible role for installing naturebank
-  license: GPLv3
-  platforms:
-  - name: Debian
-    versions:
-    - jessie
-
 dependencies:
 
 - role: gunicorn-instance
@@ -65,3 +56,12 @@ dependencies:
     <Location /admin>
       Redirect permanent /admin https://{{ naturebank_server_name }}/admin
     </Location>
+
+galaxy_info:
+  author: Antonis Christofides
+  description: Ansible role for installing naturebank
+  license: GPLv3
+  platforms:
+  - name: Debian
+    versions:
+    - jessie

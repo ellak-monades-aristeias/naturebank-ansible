@@ -45,8 +45,8 @@
     name: "naturebank"
     template: template_postgis
     owner: "naturebank"
-  sudo: yes
-  sudo_user: postgres
+  become: yes
+  become_user: postgres
 
 - name: Install custom_middleware
   copy: src=custom_middleware.py dest=/etc/naturebank/custom_middleware.py
