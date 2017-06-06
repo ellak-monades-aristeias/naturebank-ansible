@@ -10,7 +10,7 @@ dependencies:
   user: naturebank
   log_dir: /var/log/naturebank
   virtualenv: /usr/local/naturebank-virtualenv
-  port: "{{ naturebank_port }}"
+  gunicorn_port: "{{ naturebank_port }}"
 
 - role: apache-vhost
   server_name: "{{ naturebank_server_name }}"

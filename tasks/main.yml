@@ -24,7 +24,7 @@
     version: master
   notify:
   - Collect naturebank static files
-  when: naturebank_customization_name
+  when: "'{{ naturebank_customization_name }}' != ''"
 
 - name: Install prerequisites
   pip: >
@@ -67,7 +67,7 @@
   args:
     chdir: /etc/naturebank
   register: check_db_not_synced
-  always_run: True
+  check_mode: no
   ignore_errors: True
   changed_when: False
 
