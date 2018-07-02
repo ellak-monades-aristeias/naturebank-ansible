@@ -118,7 +118,7 @@ MAP
       NAME "places_beautiful"
       METADATA
         "wfs_title"          "Places with special natural beauty"
-        "wfs_srs"            "EPSG:4326"
+        "wfs_srs"            "EPSG:4326 EPSG:2100 EPSG:3857"
         "wms_include_items"  "all"
         "gml_include_items"  "all"
         "gml_featureid"      "site_code"
@@ -143,7 +143,7 @@ MAP
       NAME "biotopes_natura"
       METADATA
         "wfs_title"          "Natura biotopes"
-        "wfs_srs"            "EPSG:4326"
+        "wfs_srs"            "EPSG:4326 EPSG:2100 EPSG:3857"
         "gml_include_items"  "all"
         "gml_featureid"      "site_code"
         "wfs_enable_request" "*"
@@ -166,7 +166,7 @@ MAP
       NAME "biotopes_misc"
       METADATA
         "wfs_title"          "Other biotopes"
-        "wfs_srs"            "EPSG:4326"
+        "wfs_srs"            "EPSG:4326 EPSG:2100 EPSG:3857"
         "gml_include_items"  "all"
         "gml_featureid"      "site_code"
         "wfs_enable_request" "*"
@@ -189,7 +189,7 @@ MAP
       NAME "biotopes_corine"
       METADATA
         "wfs_title"          "Corine biotopes"
-        "wfs_srs"            "EPSG:4326"
+        "wfs_srs"            "EPSG:4326 EPSG:2100 EPSG:3857"
         "gml_include_items"  "all"
         "gml_featureid"      "site_code"
         "wfs_enable_request" "*"
@@ -212,7 +212,7 @@ MAP
       NAME "places_misc"
       METADATA
         "wfs_title"          "Miscellaneous places"
-        "wfs_srs"            "EPSG:4326"
+        "wfs_srs"            "EPSG:4326 EPSG:2100 EPSG:3857"
         "gml_include_items"  "all"
         "gml_featureid"      "site_code"
         "wfs_enable_request" "*"
