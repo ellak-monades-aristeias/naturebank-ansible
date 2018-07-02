@@ -129,7 +129,7 @@ MAP
       CONNECTIONTYPE POSTGIS
       CONNECTION "host=localhost port=5432 dbname=naturebank user=naturebank password={{ naturebank_secret_key }}"
       DATA "gis_mpoly from naturebank_biotope"
-      FILTER "category_id = 1"
+      PROCESSING "NATIVE_FILTER=category_id=1"
       CLASS
         STYLE
           COLOR 232 232 232
@@ -153,7 +153,7 @@ MAP
       CONNECTIONTYPE POSTGIS
       CONNECTION "host=localhost port=5432 dbname=naturebank user=naturebank password={{ naturebank_secret_key }}"
       DATA "gis_mpoly from naturebank_biotope"
-      FILTER "category_id = 2"
+      PROCESSING "NATIVE_FILTER=category_id=2"
       CLASS
         STYLE
           COLOR 232 232 232
@@ -176,7 +176,7 @@ MAP
       CONNECTIONTYPE POSTGIS
       CONNECTION "host=localhost port=5432 dbname=naturebank user=naturebank password={{ naturebank_secret_key }}"
       DATA "gis_mpoly from naturebank_biotope"
-      FILTER "category_id = 3"
+      PROCESSING "NATIVE_FILTER=category_id=3"
       CLASS
         STYLE
           COLOR 232 232 232
@@ -199,7 +199,7 @@ MAP
       CONNECTIONTYPE POSTGIS
       CONNECTION "host=localhost port=5432 dbname=naturebank user=naturebank password={{ naturebank_secret_key }}"
       DATA "gis_mpoly from naturebank_biotope"
-      FILTER "category_id = 4"
+      PROCESSING "NATIVE_FILTER=category_id=4"
       CLASS
         STYLE
           COLOR 232 232 232
@@ -222,7 +222,7 @@ MAP
       CONNECTIONTYPE POSTGIS
       CONNECTION "host=localhost port=5432 dbname=naturebank user=naturebank password={{ naturebank_secret_key }}"
       DATA "gis_mpoly from naturebank_biotope"
-      FILTER "category_id = 6"
+      PROCESSING "NATIVE_FILTER=category_id=6"
       CLASS
         STYLE
           COLOR 232 232 232
