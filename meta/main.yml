@@ -15,6 +15,7 @@ dependencies:
 - role: apache-vhost
   server_name: "{{ naturebank_server_name }}"
   server_aliases: "{{ naturebank_server_aliases }}"
+  letsencrypt: "{{ naturebank_letsencrypt }}"
   cert: "{{ naturebank_ssl_cert }}"
   private_key: "{{ naturebank_ssl_key }}"
   chain_certificates: "{{ naturebank_chain_certificates }}"

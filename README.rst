@@ -58,9 +58,10 @@ Variables
 - ``naturebank_server_aliases``: Alternative domain names. Apache will
   redirect these to ``naturebank_server_name``. Default empty.
 
-- ``naturebank_ssl_cert``, ``naturebank_ssl_key``,
-  ``naturebank_chain_certificates``: The keys for https, in ASCII
-  format. If ommitted, it will be http only.
+- ``naturebank_letsencrypt``, ``naturebank_ssl_cert``,
+  ``naturebank_ssl_key``, ``naturebank_chain_certificates``: For the
+  meaning of these, see the apache-vhost_ ansible module.
+
 
 - ``naturebank_customization_name``, ``naturebank_customization_repo``:
   The name and url of a repository containing a ``templates`` directory
@@ -73,12 +74,14 @@ Variables
 - ``postgres_password``: The password of the PostgreSQL ``postgres``
   user. Store this in the vault.
 
+.. _apache-vhost: https://github.com/aptiko-ansible/apache-vhost
+
 Meta
 ====
 
 Written by Antonis Christofides
 
-| Copyright (C) 2015 Antonis Christofides
+| Copyright (C) 2015-2019 Antonis Christofides
 | Copyright (C) 2015 National Technical University of Athens
 
 This program is free software: you can redistribute it and/or modify
