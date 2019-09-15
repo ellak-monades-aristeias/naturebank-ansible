@@ -8,6 +8,7 @@ ADMINS = ({% for admin in naturebank_admins %}
     ('{{ admin.name }}', '{{ admin.email }}'),
 {% endfor %})
 MANAGERS = ADMINS
+EMAIL_BACKEND = "django_sendmail_backend.backends.EmailBackend"
 EMAIL_SUBJECT_PREFIX = '[Naturebank] '
 SERVER_EMAIL = '{{ naturebank_server_email }}]'
 

@@ -32,6 +32,12 @@
     virtualenv=/usr/local/naturebank-virtualenv
     virtualenv_site_packages=yes
 
+- name: Install django-sendmail-backend
+  pip:
+    name: django-sendmail-backend
+    virtualenv: /usr/local/naturebank-virtualenv
+    virtualenv_site_packages: yes
+
 - name: Create PostgreSQL user
   postgresql_user:
     login_host: "localhost"
