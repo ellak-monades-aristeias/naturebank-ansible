@@ -9,12 +9,10 @@ This is an Ansible role that installs naturebank_ on a server.  It
 creates a PostgreSQL user "naturebank" and a database "naturebank" owned
 by "naturebank". It sets up an apache virtual host and a gunicorn
 service. It installs mapserver and configures it to serve a WFS service.
-It uses roles apache-vhost_ and gunicorn-instance_, which must be
-installed.
+It uses role apache-vhost_, which must be installed.
 
 .. _naturebank: https://github.com/ellak-monades-aristeias/naturebank
 .. _apache-vhost: https://github.com/aptiko-ansible/apache-vhost
-.. _gunicorn-instance: https://github.com/aptiko-ansible/gunicorn-instance
 
 Example::
 
@@ -59,8 +57,9 @@ Variables
   redirect these to ``naturebank_server_name``. Default empty.
 
 - ``naturebank_letsencrypt``, ``naturebank_ssl_cert``,
-  ``naturebank_ssl_key``, ``naturebank_chain_certificates``: For the
-  meaning of these, see the apache-vhost_ ansible module.
+  ``naturebank_ssl_key``, ``naturebank_chain_certificates``,
+  ``naturebank_force_ssl``: For the meaning of these, see the apache-vhost_
+  ansible module.
 
 
 - ``naturebank_customization_name``, ``naturebank_customization_repo``:
@@ -82,7 +81,7 @@ Meta
 Written by Antonis Christofides
 
 | Copyright (C) 2015-2019 Antonis Christofides
-| Copyright (C) 2015 National Technical University of Athens
+| Copyright (C) 2015-2021 National Technical University of Athens
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

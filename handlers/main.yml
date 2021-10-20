@@ -1,17 +1,28 @@
 ---
 - name: Recompile naturebank
   command: >
-    /usr/bin/python -OO -m compileall /usr/local/naturebank /etc/naturebank
-  notify: Restart naturebank supervisor
+    /usr/bin/python -OO -m compileall -x '^/opt/naturebank/venv/' /opt/naturebank /etc/opt/naturebank
+  notify:
+    - Migrate naturebank
+    - Restart naturebank
+
+- name: Migrate naturebank
+  shell: >
+    export PYTHONPATH=/etc/opt/naturebank:/opt/naturebank &&
+    export DJANGO_SETTINGS_MODULE=settings &&
+    ./venv/bin/python manage.py migrate
+  args:
+    chdir: /opt/naturebank
 
 - name: Collect naturebank static files
   shell: >
-    mkdir -p /usr/local/naturebank-staticfiles &&
-    cd /usr/local/naturebank &&
-    PYTHONPATH=/etc/naturebank:/usr/local/naturebank
-    DJANGO_SETTINGS_MODULE=settings
-    /usr/local/naturebank-virtualenv/bin/python
-    manage.py collectstatic --noinput
+    export PYTHONPATH=/etc/opt/naturebank:/opt/naturebank &&
+    export DJANGO_SETTINGS_MODULE=settings &&
+    ./venv/bin/python manage.py collectstatic --noinput
+  args:
+    chdir: /opt/naturebank
 
-- name: Restart naturebank supervisor
-  supervisorctl: name=naturebank state=restarted
+- name: Restart naturebank
+  systemd:
+    state: restarted
+    name: naturebank

@@ -1,17 +1,6 @@
 ---
 dependencies:
 
-- role: gunicorn-instance
-  instance_name: naturebank
-  program_dir: /usr/local/naturebank
-  program_name: naturebank
-  wsgi_location: naturebank_project
-  config_dir: /etc/naturebank
-  user: naturebank
-  log_dir: /var/log/naturebank
-  virtualenv: /usr/local/naturebank-virtualenv
-  gunicorn_port: "{{ naturebank_port }}"
-
 - role: apache-vhost
   server_name: "{{ naturebank_server_name }}"
   server_aliases: "{{ naturebank_server_aliases }}"
@@ -19,6 +8,7 @@ dependencies:
   cert: "{{ naturebank_ssl_cert }}"
   private_key: "{{ naturebank_ssl_key }}"
   chain_certificates: "{{ naturebank_chain_certificates }}"
+  force_ssl: "{{ naturebank_force_ssl }}"
   extras: |
       ProxyTimeout 30
 
@@ -27,14 +17,14 @@ dependencies:
           ProxyPreserveHost On
       </LocationMatch>
 
-      Alias /static/ /usr/local/naturebank-staticfiles/
-      <Directory /usr/local/naturebank-staticfiles/>
+      Alias /static/ /var/cache//naturebank/static/
+      <Directory /var/cache/naturebank/static/>
         Options -Indexes
         Require all granted
       </Directory>
 
-      Alias /media/ /var/local/naturebank/
-      <Directory /var/local/naturebank/>
+      Alias /media/ /var/opt/naturebank/
+      <Directory /var/opt/naturebank/>
         Options -Indexes
         Require all granted
       </Directory>
@@ -65,4 +55,4 @@ galaxy_info:
   platforms:
   - name: Debian
     versions:
-    - jessie
+    - bullseye

@@ -1,0 +1,16 @@
+[Unit]
+Description="Filotis"
+
+[Service]
+User=naturebank
+Group=naturebank
+WorkingDirectory=/opt/naturebank
+Environment="PYTHONPATH=/etc/opt/naturebank"
+Environment="DJANGO_SETTINGS_MODULE=settings"
+ExecStart=/opt/naturebank/venv/bin/gunicorn naturebank_project.wsgi:application \
+    --workers=3 --log-level=warning --bind=127.0.0.1:{{ naturebank_port }} \
+    --timeout=60 \
+    --log-file=/var/log/naturebank/gunicorn.log
+
+[Install]
+WantedBy=multi-user.target

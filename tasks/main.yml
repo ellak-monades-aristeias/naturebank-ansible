@@ -1,16 +1,15 @@
 ---
-- name: Install git, required for installing naturebank
-  apt: name=git
-- name: Install mercurial, required for some naturebank dependencies
-  apt: name=mercurial
-- name: Install virtualenv
-  apt: name=python-virtualenv
+- name: Install apt packages required for naturebank
+  apt:
+    name:
+    - git
+    - python3-virtualenv
+    - cgi-mapserver
 
 - name: Install naturebank
   git:
     repo: https://github.com/ellak-monades-aristeias/naturebank.git
-    dest: /usr/local/naturebank
-    ssh_opts: '-o StrictHostKeyChecking=no'
+    dest: /opt/naturebank
     version: master
   notify:
   - Recompile naturebank
@@ -19,24 +18,48 @@
 - name: Install naturebank customization
   git:
     repo: "{{ naturebank_customization_repo }}"
-    dest: /usr/local/{{ naturebank_customization_name }}
-    ssh_opts: '-o StrictHostKeyChecking=no'
+    dest: /opt/{{ naturebank_customization_name }}
     version: master
   notify:
   - Collect naturebank static files
-  when: "'{{ naturebank_customization_name }}' != ''"
+  when: naturebank_customization_name != ''
 
 - name: Install prerequisites
-  pip: >
-    requirements=/usr/local/naturebank/requirements.txt
-    virtualenv=/usr/local/naturebank-virtualenv
-    virtualenv_site_packages=yes
+  pip:
+    requirements: /opt/naturebank/requirements.txt
+    virtualenv: /opt/naturebank/venv
+    virtualenv_site_packages: yes
+    virtualenv_python: python3
 
 - name: Install django-sendmail-backend
   pip:
     name: django-sendmail-backend
-    virtualenv: /usr/local/naturebank-virtualenv
+    virtualenv: /opt/naturebank/venv
     virtualenv_site_packages: yes
+    virtualenv_python: python3
+
+- name: Create naturebank configuration directory
+  file: dest=/etc/opt/naturebank state=directory
+
+- name: Configure naturebank
+  template: src=settings.py dest=/etc/opt/naturebank/settings.py
+  notify:
+  - Recompile naturebank
+  - Collect naturebank static files
+
+- name: Install custom_middleware
+  copy: src=custom_middleware.py dest=/etc/opt/naturebank/custom_middleware.py
+  notify:
+  - Recompile naturebank
+
+- name: Create group naturebank
+  group: name=naturebank system=yes
+
+- name: Create user naturebank
+  user:
+    name: naturebank
+    group: naturebank
+    system: yes
 
 - name: Create PostgreSQL user
   postgresql_user:
@@ -46,7 +69,7 @@
     name: "naturebank"
     password: "{{ naturebank_secret_key }}"
 
-- name: Create database
+- name: Create naturebank database
   postgresql_db:
     name: "naturebank"
     template: template_postgis
@@ -54,24 +77,13 @@
   become: yes
   become_user: postgres
 
-- name: Install custom_middleware
-  copy: src=custom_middleware.py dest=/etc/naturebank/custom_middleware.py
-  notify:
-  - Recompile naturebank
-
-- name: Configure naturebank
-  template: src=settings.py dest=/etc/naturebank/settings.py
-  notify:
-  - Recompile naturebank
-  - Collect naturebank static files
-
 - name: Check whether db is synced
   shell: >
     echo "select * from django_site;" |
     sudo -u postgres psql naturebank 2>&1 |
     grep ERROR
   args:
-    chdir: /etc/naturebank
+    chdir: /opt/naturebank
   register: check_db_not_synced
   check_mode: no
   ignore_errors: True
@@ -80,31 +92,45 @@
 - name: Sync naturebank database
   # The password hashed below is "topsecret"
   shell: >
-    export PYTHONPATH=/etc/naturebank &&
+    export PYTHONPATH=/etc/opt/naturebank &&
     export DJANGO_SETTINGS_MODULE=settings &&
-    /usr/local/naturebank-virtualenv/bin/python manage.py migrate &&
-    /usr/local/naturebank-virtualenv/bin/python manage.py createsuperuser
+    /opt/naturebank/venv/bin/python manage.py migrate &&
+    /opt/naturebank/venv/bin/python manage.py createsuperuser
     --username=admin --email=nobody@example.com --noinput
     && (
     echo "update auth_user set password='pbkdf2_sha256\$10000\$EkSCGqGowJhN\$0WuikmR5lAVwZbHcR8ODit6Nktth5Rj0MjXIvqPA7jQ=' where username='admin';"
     |
     sudo -u postgres psql naturebank )
   args:
-    chdir: /usr/local/naturebank
+    chdir: /opt/naturebank
   when: check_db_not_synced.rc == 0
+
+# Mapserver
+
+- name: Enable mod_cgid
+  apache2_module: name=cgid
+  notify:
+  - Reload apache
+
+- name: Create directory /var/log/mapserver
+  file:
+    state: directory
+    path: /var/log/mapserver
+    owner: www-data
+    group: www-data
 
 - name: Naturebank mapserver map file
   template:
     src: naturebank.map
-    dest: /etc/naturebank/naturebank.map
+    dest: /etc/opt/naturebank/naturebank.map
     owner: root
-    group: mapserver
+    group: www-data
     mode: 0640
 
 - name: Naturebank mapserver GetFeatureInfo template
   copy:
     src: mapserver-getfeatureinfo.html
-    dest: /etc/naturebank/mapserver-getfeatureinfo.html
+    dest: /etc/opt/naturebank/mapserver-getfeatureinfo.html
 
 - name: Mapserver help directory
   file:
@@ -125,6 +151,48 @@
 
 - name: Create media files directory
   file:
-    dest: /var/local/naturebank
+    dest: /var/opt/naturebank
     state: directory
     owner: naturebank
+
+- name: Create naturebank static files directory
+  file:
+    state: directory
+    dest: /var/cache/naturebank/static
+
+- name: Cron for clearing Django sessions for naturebank
+  copy:
+    dest: /etc/cron.daily/clear-sessions-naturebank
+    content: |
+      #!/bin/sh
+      export PYTHONPATH=/etc/opt/naturebank
+      export DJANGO_SETTINGS_MODULE=settings
+      cd /opt/naturebank
+      su naturebank -c '/opt/naturebank/venv/bin/python manage.py clearsessions'
+    mode: 0755
+
+- name: Install gunicorn for naturebank
+  pip:
+    name: gunicorn
+    version: 20.1.0
+    virtualenv: "/opt/naturebank/venv"
+    virtualenv_site_packages: yes
+    virtualenv_python: python3
+
+- name: Create naturebank log directory
+  file:
+    dest: /var/log/naturebank
+    state: directory
+    owner: naturebank
+
+- name: Create naturebank gunicorn service
+  template:
+    src: naturebank.service
+    dest: /etc/systemd/system/naturebank.service
+
+- name: Enable naturebank gunicorn service
+  systemd:
+    name: naturebank
+    enabled: yes
+    state: started
+    daemon-reload: yes
