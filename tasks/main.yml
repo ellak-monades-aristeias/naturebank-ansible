@@ -127,6 +127,12 @@
     group: www-data
     mode: 0640
 
+- name: Create mapserver configuration file
+  copy:
+    src: mapserver.conf
+    dest: /etc/mapserver.conf
+    mode: 0644
+
 - name: Naturebank mapserver GetFeatureInfo template
   copy:
     src: mapserver-getfeatureinfo.html
