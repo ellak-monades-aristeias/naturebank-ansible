@@ -1,7 +1,7 @@
 ---
 dependencies:
 
-- role: apache-vhost
+- role: aptiko.general.apache_vhost
   server_name: "{{ naturebank_server_name }}"
   server_aliases: "{{ naturebank_server_aliases }}"
   letsencrypt: "{{ naturebank_letsencrypt }}"
