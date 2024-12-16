@@ -1,7 +1,7 @@
 ---
 - name: Recompile naturebank
   command: >
-    /usr/bin/python -OO -m compileall -x '^/opt/naturebank/venv/' /opt/naturebank /etc/opt/naturebank
+    /opt/naturebank/venv/bin/python -OO -m compileall -x '^/opt/naturebank/venv/' /opt/naturebank /etc/opt/naturebank
   notify:
     - Migrate naturebank
     - Restart naturebank
